@@ -27,16 +27,22 @@ app.get("/api/hello", function (req, res) {
 
 app.get("/api/:date", function (req, res) {
   date_string = req.params.date;
+  if (!isNaN(parseInt(date_string)) && date_string.match(/^[0-9]+$/) != null) {
+    unix_out = Math.floor(new Date(parseInt(date_string)).getTime());
+    utc_out = new Date(parseInt(date_string)).toUTCString();
+    res.json({unix: parseInt(unix_out), utc: utc_out});
+  } 
   if (new Date(date_string) == 'Invalid Date') {
-    return res.json({error: "Invalid Date"});
+    res.json({error: 'Invalid Date'});
+  } else {
+    unix_out = Math.floor(new Date(date_string).getTime());
+    utc_out = new Date(date_string).toUTCString();
+    res.json({unix: parseInt(unix_out), utc: utc_out});
   }
-  unix_out = Math.floor(new Date(date_string).getTime() / 1000);
-  utc_out = new Date(date_string).toUTCString();
-  res.json({unix: parseInt(unix_out), utc: utc_out});
 });
 
 app.get("/api/", function (req, res) {
-  unix_out = Math.floor(new Date().getTime() / 1000);
+  unix_out = Math.floor(new Date().getTime());
   utc_out = new Date().toUTCString();
   res.json({unix: parseInt(unix_out), utc: utc_out});
 });
